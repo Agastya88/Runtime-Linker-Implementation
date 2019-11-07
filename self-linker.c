@@ -27,9 +27,9 @@ int main(int argc, char * argv[])
   printf("The entry with the addition of the offset is: %p\n",
   (void*) (&_GLOBAL_OFFSET_TABLE_ + 0x18));
 
-  void **a = (void*)(&_GLOBAL_OFFSET_TABLE_ + 0x18);
+  void **putsGOT_location = (void*)(&_GLOBAL_OFFSET_TABLE_ + 0x18);
 
-  *a = putsFunctionPointer;
+  *putsGOT_location = putsFunctionPointer;
 
   printf ("Function pointer for puts: %p\n", putsFunctionPointer);
 
