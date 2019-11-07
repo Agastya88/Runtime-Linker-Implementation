@@ -1,0 +1,125 @@
+Script started on 2019-11-07 14:43:01-05:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="73" LINES="43"]
+]0;agastya@middlinux:~/Desktop/CS315/assignment4[agastya@middlinux assignment4]$ gdb self-linker
+[35;1mGNU gdb (GDB) 8.3.1
+[mCopyright (C) 2019 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-pc-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from [32mself-linker[m...
+(gdb) b 26[K5
+Breakpoint 1 at [34m0x1244[m: file [32mself-linker.c[m, line 26.
+(gdb) run
+Starting program: /home/agastya/Desktop/CS315/assignment4/self-linker
+The first entry of the global offset table is 0x3de8
+The GOT starts at address 0x555555558000
+
+Breakpoint 1, [33mmain[m ([36margc[m=1, [36margv[m=0x7fffffffe8d8) at [32mself-linker.c[m:26
+26	  putsFunctionPointer = dlsym(handle, "puts");
+(gdb) step
+29	  void **putsGOT_location = (void*)(&_GLOBAL_OFFSET_TABLE_ + 0x18);
+(gdb) step
+33	  *putsGOT_location = putsFunctionPointer;
+(gdb) step
+36	  puts ("hello");
+(gdb) print ptus[K[K[KutsFunctionPointer
+$1 = (void *) [34m0x7ffff7e64080[m <[33mputs[m> //SHOWS THAT THE FUNCTION POINTER IS STORED AT THIS LOCATION USING LIBC
+(gdb) x/gx *putsGOT_location
+[34m0x7ffff7e64080[m <[33mputs[m>:	0x55415641fa1e0ff3 //SHOWS THAT THE FUNCTION POINTER IS STORED AT THE ENTRY IN THE GOT WHERE PUTS IS EXPECTED
+(gdb) print &_Gl[KLOBAL_OFFSET_TABLE_  +[K[K+ 0x18
+$2 = (void **) [34m0x5555555580c0[m
+(gdb) disas
+Dump of assembler code for function main:
+   [34m0x00005555555551b9[m <+0>:	push   %rbp
+   [34m0x00005555555551ba[m <+1>:	mov    %rsp,%rbp
+   [34m0x00005555555551bd[m <+4>:	sub    $0x30,%rsp
+   [34m0x00005555555551c1[m <+8>:	mov    %edi,-0x24(%rbp)
+   [34m0x00005555555551c4[m <+11>:	mov    %rsi,-0x30(%rbp)
+   [34m0x00005555555551c8[m <+15>:	mov    0x2e31(%rip),%rax        # 0x555555558000
+   [34m0x00005555555551cf[m <+22>:	mov    %rax,%rsi
+   [34m0x00005555555551d2[m <+25>:	lea    0xe2f(%rip),%rdi        # 0x555555556008
+   [34m0x00005555555551d9[m <+32>:	mov    $0x0,%eax
+   [34m0x00005555555551de[m <+37>:	callq  0x555555555040 <printf@plt>
+   [34m0x00005555555551e3[m <+42>:	lea    0x2e16(%rip),%rsi        # 0x555555558000
+   [34m0x00005555555551ea[m <+49>:	lea    0xe49(%rip),%rdi        # 0x55555555603a
+   [34m0x00005555555551f1[m <+56>:	mov    $0x0,%eax
+   [34m0x00005555555551f6[m <+61>:	callq  0x555555555040 <printf@plt>
+   [34m0x00005555555551fb[m <+66>:	mov    $0x1,%esi
+   [34m0x0000555555555200[m <+71>:	lea    0xe51(%rip),%rdi        # 0x555555556058
+   [34m0x0000555555555207[m <+78>:	callq  0x555555555060 <dlopen@plt>
+   [34m0x000055555555520c[m <+83>:	mov    %rax,-0x18(%rbp)
+   [34m0x0000555555555210[m <+87>:	cmpq   $0x0,-0x18(%rbp)
+   [34m0x0000555555555215[m <+92>:	jne    0x555555555244 <main+139>
+   [34m0x0000555555555217[m <+94>:	callq  0x5555555550b0 <dlerror@plt>
+   [34m0x000055555555521c[m <+99>:	mov    %rax,%rdx
+   [34m0x000055555555521f[m <+102>:	mov    0x2e5a(%rip),%rax        # 0x555555558080 <stderr@@GLIBC_2.2.5>
+   [34m0x0000555555555226[m <+109>:	lea    0xe35(%rip),%rsi        # 0x555555556062
+   [34m0x000055555555522d[m <+116>:	mov    %rax,%rdi
+   [34m0x0000555555555230[m <+119>:	mov    $0x0,%eax
+   [34m0x0000555555555235[m <+124>:	callq  0x555555555050 <fprintf@plt>
+   [34m0x000055555555523a[m <+129>:	mov    $0x1,%edi
+   [34m0x000055555555523f[m <+134>:	callq  0x555555555090 <exit@plt>
+   [34m0x0000555555555244[m <+139>:	mov    -0x18(%rbp),%rax
+   [34m0x0000555555555248[m <+143>:	lea    0xe17(%rip),%rsi        # 0x555555556066
+   [34m0x000055555555524f[m <+150>:	mov    %rax,%rdi
+   [34m0x0000555555555252[m <+153>:	callq  0x5555555550a0 <dlsym@plt>
+[m--Type <RET> for more, q to quit, c to continue without paging--si[K[K
+   [34m0x0000555555555257[m <+158>:	mov    %rax,-0x10(%rbp)
+   [34m0x000055555555525b[m <+162>:	lea    0x2e5e(%rip),%rax        # 0x5555555580c0
+   [34m0x0000555555555262[m <+169>:	mov    %rax,-0x8(%rbp)
+   [34m0x0000555555555266[m <+173>:	mov    -0x8(%rbp),%rax
+   [34m0x000055555555526a[m <+177>:	mov    -0x10(%rbp),%rdx
+   [34m0x000055555555526e[m <+181>:	mov    %rdx,(%rax)
+=> [34m0x0000555555555271[m <+184>:	lea    0xdf3(%rip),%rdi        # 0x55555555606b
+   [34m0x0000555555555278[m <+191>:	callq  0x555555555030 <puts@plt>
+   [34m0x000055555555527d[m <+196>:	lea    0xded(%rip),%rdi        # 0x555555556071
+   [34m0x0000555555555284[m <+203>:	callq  0x555555555030 <puts@plt>
+   [34m0x0000555555555289[m <+208>:	mov    -0x18(%rbp),%rax
+   [34m0x000055555555528d[m <+212>:	mov    %rax,%rdi
+   [34m0x0000555555555290[m <+215>:	callq  0x555555555070 <dlclose@plt>
+   [34m0x0000555555555295[m <+220>:	mov    %eax,-0x1c(%rbp)
+   [34m0x0000555555555298[m <+223>:	cmpl   $0x0,-0x1c(%rbp)
+   [34m0x000055555555529c[m <+227>:	je     0x5555555552aa <main+241>
+   [34m0x000055555555529e[m <+229>:	lea    0xdd2(%rip),%rdi        # 0x555555556077
+   [34m0x00005555555552a5[m <+236>:	callq  0x555555555080 <perror@plt>
+   [34m0x00005555555552aa[m <+241>:	mov    $0x0,%eax
+   [34m0x00005555555552af[m <+246>:	leaveq
+   [34m0x00005555555552b0[m <+247>:	retq
+End of assembler dump.
+(gdb) si
+[34m0x0000555555555278[m	36	  puts ("hello");
+(gdb)
+[34m0x0000555555555030[m in [33mputs@plt[m ()
+(gdb) disas
+Dump of assembler code for function puts@plt:
+=> [34m0x0000555555555030[m <+0>:	jmpq   *0x2fe2(%rip)        # 0x555555558018 <puts@got.plt>  //SHOWS THAT PUTS HAS BEEN PLACED AT THE CORRECT LOCATION IN THE GOT
+   [34m0x0000555555555036[m <+6>:	pushq  $0x0
+   [34m0x000055555555503b[m <+11>:	jmpq   0x555555555020
+End of assembler dump.
+(gdb) si
+[34m0x0000555555555036[m in [33mputs@plt[m ()
+(gdb) disas
+Dump of assembler code for function puts@plt:
+   [34m0x0000555555555030[m <+0>:	jmpq   *0x2fe2(%rip)        # 0x555555558018 <puts@got.plt>
+=> [34m0x0000555555555036[m <+6>:	pushq  $0x0
+   [34m0x000055555555503b[m <+11>:	jmpq   0x555555555020
+End of assembler dump.
+(gdb) q
+A debugging session is active.
+
+	Inferior 1 [process 66815] will be killed.
+
+Quit anyway? (y or n) y
+]0;agastya@middlinux:~/Desktop/CS315/assignment4[agastya@middlinux assignment4]$ cle[K[K[Kexit
+exit
+
+Script done on 2019-11-07 14:45:49-05:00 [COMMAND_EXIT_CODE="0"]

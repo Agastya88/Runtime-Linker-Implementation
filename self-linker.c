@@ -15,6 +15,7 @@ int main(int argc, char * argv[])
   void *putsFunctionPointer;
 
   handle = dlopen("libc.so.6", RTLD_LAZY);
+  //creates a handler for libc
 
   if (!handle)
   {
@@ -23,20 +24,21 @@ int main(int argc, char * argv[])
   }
 
   putsFunctionPointer = dlsym(handle, "puts");
-
-  printf("The entry with the addition of the offset is: %p\n",
-  (void*) (&_GLOBAL_OFFSET_TABLE_ + 0x18));
+  //finds the function pointer from puts using the handler for libc
 
   void **putsGOT_location = (void*)(&_GLOBAL_OFFSET_TABLE_ + 0x18);
+  //locates where the entry for puts is in the GOT
+  //I found this by running GDB on the program hello-world
 
   *putsGOT_location = putsFunctionPointer;
+  //places the function pointer for puts where it needs to be placed in the GOT
 
-  printf ("Function pointer for puts: %p\n", putsFunctionPointer);
+  puts ("hello");
+  puts ("world");
 
   int closeReturnValue = dlclose (handle);
   if (closeReturnValue != 0)
   {
     perror ("Error");
   }
-
 }
