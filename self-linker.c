@@ -16,8 +16,8 @@ int main(int argc, char * argv[])
 
   //error handling for dlopen
   if (!handle){
-      fprintf(stderr, "%s\n", dlerror());
-      exit(EXIT_FAILURE);
+    fprintf(stderr, "%s\n", dlerror());
+    exit(EXIT_FAILURE);
   }
 
   putsFunctionPointer = dlsym(handle, "puts");
@@ -25,8 +25,8 @@ int main(int argc, char * argv[])
 
   //error handling for dlsym
   if (!putsFunctionPointer){
-      fprintf(stderr, "%s\n", dlerror());
-      exit(EXIT_FAILURE);
+    fprintf(stderr, "%s\n", dlerror());
+    exit(EXIT_FAILURE);
   }
 
   void **GOT_locations = &_GLOBAL_OFFSET_TABLE_;
